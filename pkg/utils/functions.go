@@ -36,12 +36,14 @@ func ValidatorSign(params map[string]interface{}, keySign string) bool {
 		if varKey == "sign" {
 			continue
 		}
+		if strBuilder.Len() > 0 {
+			strBuilder.WriteByte('&')
+		}
 		strBuilder.WriteString(varKey)
-		strBuilder.WriteString("=")
+		strBuilder.WriteByte('=')
 		strBuilder.WriteString(fmt.Sprintf("%v", params[varKey]))
-		strBuilder.WriteString("&")
 	}
-	strBuilder.WriteString("key=" + keySign)
+	strBuilder.WriteString("&key=" + keySign)
 	str := strBuilder.String()
 	logging.Info(str[:len(str)-32])
 	h := md5.New()
