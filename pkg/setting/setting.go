@@ -2,6 +2,8 @@ package setting
 
 import (
 	"log"
+	"os"
+	"path/filepath"
 	"time"
 
 	"gopkg.in/ini.v1"
@@ -32,14 +34,30 @@ var (
 	HOST string
 	// DBNAME this is DBNAME
 	DBNAME string
+	// AppPath this is AppPath
+	AppPath string
 	// APIKEY this is APIKEY
-	APIKEY string
+	APIKEY        string
+	appConfigPath string
 )
 
 func init() {
-	Cfg, err := ini.Load("conf/app.ini")
+	var filename = "app.ini"
+	var err error
+	if AppPath, err = filepath.Abs(filepath.Dir(os.Args[0])); err != nil {
+		log.Fatalf("Load conf/app.ini failed: %v", err)
+	}
+	workPath, err := os.Getwd()
+	appConfigPath = filepath.Join(workPath, "conf", filename)
+	if _, err := os.Stat(appConfigPath); err != nil {
+		if os.IsNotExist(err) {
+			log.Fatalf("Load conf/app.ini failed: %v", err)
+		}
+	}
+	appConfigPath = filepath.Join(AppPath, "conf", filename)
+	Cfg, err := ini.Load(appConfigPath)
 	if err != nil {
-		log.Println("Load conf/app.ini failed", err)
+		log.Fatalf("Load conf/app.ini failed: %v", err)
 	}
 	loadServer(Cfg)
 	loadApp(Cfg)
