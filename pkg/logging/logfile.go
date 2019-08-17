@@ -9,7 +9,7 @@ import (
 
 var (
 	// LogSavePath this is LogSavePath
-	LogSavePath = "runtime/logs/"
+	LogSavePath = "/var/run/ginlogs/"
 	// LogSaveName this is LogSaveName
 	LogSaveName = "log"
 	// LogFileExt this is LogFileExt
